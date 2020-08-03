@@ -3,18 +3,22 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('areascoopunion', 'AreaCoopunionController@index');
-Route::get('areasestudios', 'AreaEstudioController@index');
-Route::get('areaslaborales', 'AreaLaboralController@index');
-Route::get('estadosciviles', 'EstadoCivilController@index');
-Route::get('generos', 'GeneroController@index');
-Route::get('nivelesestudios', 'NivelEstudioController@index');
-Route::get('provincias', 'ProvinciaController@index');
-Route::get('localidades/{provincia_id}', 'LocalidadController@index');
-Route::get('tiposfamiliares', 'TipoFamiliarController@index');
+Route::middleware(['auth.firebase'])->group(function () {
 
-Route::get('postulante/id/{id}', 'PostulanteController@getPostulanteById');
-Route::get('postulante/{uid_firebase}', 'PostulanteController@show');
+    Route::post('login', 'LoginController@index');
+    Route::post('areascoopunion', 'AreaCoopunionController@index');
+    Route::post('areasestudios', 'AreaEstudioController@index');
+    Route::post('areaslaborales', 'AreaLaboralController@index');
+    Route::post('estadosciviles', 'EstadoCivilController@index');
+    Route::post('generos', 'GeneroController@index');
+    Route::post('nivelesestudios', 'NivelEstudioController@index');
+    Route::post('provincias', 'ProvinciaController@index');
+    Route::post('localidades/{provincia_id}', 'LocalidadController@index');
+    Route::post('tiposfamiliares', 'TipoFamiliarController@index');
+    Route::post('postulante/id/{id}', 'PostulanteController@getPostulanteById');
+    Route::post('postulante/{uid_firebase}', 'PostulanteController@show');
+    Route::put('postulante', 'PostulanteController@update');
+    Route::post('postulantes', 'PostulanteController@filters');
+});
 
-Route::put('postulante', 'PostulanteController@update');
-Route::post('postulantes', 'PostulanteController@filters');
+

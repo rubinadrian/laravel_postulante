@@ -20,11 +20,11 @@ class DatabaseSeeder extends Seeder
         $this->call(AreaCoopunionSeeder::class);
         $this->call(AreaEstudioSeeder::class);
         $this->call(AreaLaboralSeeder::class);
-        $this->call(PostulanteSeeder::class);
-        $this->call(EstudioSeeder::class);
-        $this->call(ExperienciaSeeder::class);
-        $this->call(FamiliarSeeder::class);
-        $this->call(PreferenciaSeeder::class);
-        $this->call(ReferenciaSeeder::class);
+        // $this->call(PostulanteSeeder::class);
+        // $this->call(EstudioSeeder::class);
+        // $this->call(ExperienciaSeeder::class);
+        // $this->call(FamiliarSeeder::class);
+        // $this->call(PreferenciaSeeder::class);
+        // $this->call(ReferenciaSeeder::class);
     }
 }

@@ -8,6 +8,7 @@ use App\Familiar;
 use App\Estudio;
 use App\Experiencia;
 use App\Referencia;
+use App\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Storage;
@@ -96,20 +97,22 @@ class PostulanteController extends Controller
 
     public function update(Request $request) {
 
-    	if($request->admin) {
-			$p = Postulante::find($request->id);
+    	$is_admin = User::isAdmin($request->uid);
+    	
+    	if($request->id) {
+    		$p = Postulante::find($request->id);
     	} else {
-    		$p = Postulante::where('keyfirestore', $request->uid)->first();
+    		if(!$is_admin && $request->uid) {
+    			$p = Postulante::where('keyfirestore', $request->uid)->first();
+    		}
     	}
 
-    	return [$request,$p];
-	   	
-    	if(!$p){
+    	if(!$p) {
     		$p = new Postulante();
+    		$p->keyfirestore = $request->uid;
     	}
 
-    	// Datos Personales
-   		$p->keyfirestore = $request->uid;
+    	// Datos Personales   		
 		$p->apellido = $request->personal['apellido'];
 		$p->celular = $request->personal['celular'];
 		$p->dni = $request->personal['dni'];
@@ -162,7 +165,7 @@ class PostulanteController extends Controller
 		$p->preferencias()->detach();
 		$p->preferencias()->attach($request->preferencias);
 		
-    	return $p->preferencias;
+    	return ['msg' => 'successful'];
 
     }
 
