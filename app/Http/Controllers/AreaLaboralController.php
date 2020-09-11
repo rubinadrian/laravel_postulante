@@ -14,7 +14,39 @@ class AreaLaboralController extends Controller
      */
     public function index()
     {
-        return AreaLaboral::all();
+        return AreaLaboral::orderBy('nombre', 'asc')->get();
+    }
+
+    public function update(Request $request)
+    {
+        if ($request->has('id'))
+        {
+            $area = AreaLaboral::find($request->id);
+        }
+        else
+        {
+            $area = new AreaLaboral();
+        }
+
+        if ($area && $request->has('nombre'))
+        {
+            $area->nombre = $request->nombre;
+            $area->save();
+            return ['ok'=>true];
+        }
+
+        return ['ok'=>false];
+    }
+
+    public function remove(Request $request)
+    {
+        if ($request->has('id'))
+        {
+            $area = AreaLaboral::find($request->id);
+            if($area) {
+                $area->delete();
+            }
+        }
     }
 
 }

@@ -3,12 +3,26 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
+
+
 Route::middleware(['auth.firebase'])->group(function () {
+    Route::post('areascoopunion', 'AreaCoopunionController@index');
+    Route::post('areascoopunion/update', 'AreaCoopunionController@update');
+    Route::post('areascoopunion/remove', 'AreaCoopunionController@remove');
+
+    Route::post('areasestudios', 'AreaEstudioController@index');
+    Route::post('areasestudios/update', 'AreaEstudioController@update');
+    Route::post('areasestudios/remove', 'AreaEstudioController@remove');
+
+    Route::post('areaslaborales', 'AreaLaboralController@index');
+    Route::post('areaslaborales/update', 'AreaLaboralController@update');
+    Route::post('areaslaborales/remove', 'AreaLaboralController@remove');
+
+    Route::post('curriculum/getfile', 'CurriculumController@getFile');
+    Route::post('curriculum/uploadfile', 'CurriculumController@uploadFile');
 
     Route::post('login', 'LoginController@index');
-    Route::post('areascoopunion', 'AreaCoopunionController@index');
-    Route::post('areasestudios', 'AreaEstudioController@index');
-    Route::post('areaslaborales', 'AreaLaboralController@index');
     Route::post('estadosciviles', 'EstadoCivilController@index');
     Route::post('generos', 'GeneroController@index');
     Route::post('nivelesestudios', 'NivelEstudioController@index');

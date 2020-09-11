@@ -44,6 +44,7 @@ class AuthTokenFirebase
         }
 
         $uid = $verifiedIdToken->getClaim('sub');
+        if(!$uid) { abort(403, 'Error al obtener el uid del usuario'); };
         $user = User::updateOrCreate(['keyfirestore'=>$uid]);
         $user->remember_token = $token;
         $user->save();

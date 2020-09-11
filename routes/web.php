@@ -13,3 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::get('TestServiceOn', function() {
+    return "Service Http on";
+});
+

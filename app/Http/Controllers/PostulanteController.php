@@ -38,7 +38,7 @@ class PostulanteController extends Controller
 
 		 if($request->vivienda)
 		 $query = $query->where('vivienda', $request->vivienda);
-		 
+
 		 if($request->nivel_estudio_id)
 		 $query = $query->whereHas('estudios', function($q) use ($request) {
 		 	$q->whereIn('nivel_estudio_id', $request->nivel_estudio_id);
@@ -48,7 +48,7 @@ class PostulanteController extends Controller
 		 $query = $query->whereHas('estudios', function($q) use ($request) {
 		 	$q->whereIn('area_estudio_id', $request->area_estudio);
 		 });
-		 
+
 		 if($request->area_laboral)
 		 $query = $query->whereHas('experiencias', function($q) use ($request) {
 		 	$q->whereIn('area_laboral_id', $request->area_laboral);
@@ -58,13 +58,13 @@ class PostulanteController extends Controller
 		 $query = $query->whereHas('preferencias', function($q) use ($request) {
 		 	$q->whereIn('area_coopunion_id', $request->areas_coopunion);
 		 });
-		 
+
 
 		 return $query->limit(50)->get();
 
 	}
 
-    
+
     public function show($uid_firebase)
     {
         $postulante = Postulante::with(['familiares','estudios','experiencias','referencias','preferencias'])
@@ -97,8 +97,8 @@ class PostulanteController extends Controller
 
     public function update(Request $request) {
 
-    	$is_admin = User::isAdmin($request->uid);
-    	
+    	$is_admin = User::where('keyfirestore', $request->uid)->where('admin', 1)->first();
+
     	if($request->id) {
     		$p = Postulante::find($request->id);
     	} else {
@@ -112,7 +112,7 @@ class PostulanteController extends Controller
     		$p->keyfirestore = $request->uid;
     	}
 
-    	// Datos Personales   		
+    	// Datos Personales
 		$p->apellido = $request->personal['apellido'];
 		$p->celular = $request->personal['celular'];
 		$p->dni = $request->personal['dni'];
@@ -131,13 +131,13 @@ class PostulanteController extends Controller
 		//Datos Familiares
 		$p->familiares()->delete();
 		$this->createFamiliar($request->familiares['madre'], 1, $p->id);
-		
+
 		$this->createFamiliar($request->familiares['padre'], 2, $p->id);
-		
+
 		foreach($request->familiares['hijos'] as $hijo) {
 			$this->createFamiliar($hijo, 3, $p->id);
 		}
-		
+
 		foreach($request->familiares['hermanos'] as $hermano) {
 			$this->createFamiliar($hermano, 4, $p->id);
 		}
@@ -164,7 +164,7 @@ class PostulanteController extends Controller
 		//Preferencias
 		$p->preferencias()->detach();
 		$p->preferencias()->attach($request->preferencias);
-		
+
     	return ['msg' => 'successful'];
 
     }
