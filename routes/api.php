@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-
+//Route::get('prueba/mail', 'PostulanteController@pruebaMail');
 
 Route::middleware(['auth.firebase'])->group(function () {
     Route::post('areascoopunion', 'AreaCoopunionController@index');
@@ -22,16 +22,21 @@ Route::middleware(['auth.firebase'])->group(function () {
     Route::post('curriculum/getfile', 'CurriculumController@getFile');
     Route::post('curriculum/uploadfile', 'CurriculumController@uploadFile');
 
-    Route::post('login', 'LoginController@index');
+    // Route::post('login', 'LoginController@index');
+    Route::get('usuario','UsuarioController@index');
+    Route::put('usuario','UsuarioController@setUserAdmin');
+    Route::delete('usuario/{id}','UsuarioController@delUserAdmin');
+
     Route::post('estadosciviles', 'EstadoCivilController@index');
     Route::post('generos', 'GeneroController@index');
     Route::post('nivelesestudios', 'NivelEstudioController@index');
     Route::post('provincias', 'ProvinciaController@index');
     Route::post('localidades/{provincia_id}', 'LocalidadController@index');
     Route::post('tiposfamiliares', 'TipoFamiliarController@index');
+
     Route::post('postulante/id/{id}', 'PostulanteController@getPostulanteById');
     Route::post('postulante/{uid_firebase}', 'PostulanteController@show');
-    Route::put('postulante', 'PostulanteController@update');
+    Route::put ('postulante', 'PostulanteController@update');
     Route::post('postulantes', 'PostulanteController@filters');
 });
 

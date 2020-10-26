@@ -15,6 +15,9 @@ class AlterUserTable extends Migration
     {
         Schema::table('users', function($table)
         {
+            $table->string('name',100)->nullable();
+            $table->string('email',100)->nullable();
+            $table->string('phone',20)->nullable();
             $table->string('rememberToken',1500)->nullable();
         });
     }
@@ -27,6 +30,9 @@ class AlterUserTable extends Migration
     public function down()
     {
         Schema::table('users', function($table) {
+            $table->dropColumn('name');
+            $table->dropColumn('email');
+            $table->dropColumn('phone');
             $table->dropColumn('rememberToken');
         });
     }

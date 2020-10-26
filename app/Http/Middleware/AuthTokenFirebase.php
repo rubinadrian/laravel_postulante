@@ -19,9 +19,9 @@ class AuthTokenFirebase
      */
     public function handle($request, Closure $next)
     {
-        if(!$request->has('token')) { abort(403, 'Unauthorized action.1'); };
-
-        $token = $request->token;
+        // $request->attributes->add(['myAttribute' => 'myValue']);
+        $token = $request->bearerToken();
+        if(!$token) { abort(403, 'Unauthorized action.1');}
 
         $user = User::where('remember_token', $token)->first();
         if($user) {
@@ -35,18 +35,20 @@ class AuthTokenFirebase
         try {
             $verifiedIdToken = $auth->verifyIdToken($token);
         } catch (\InvalidArgumentException $e) {
-            // return 'The token could not be parsed: '.$e->getMessage();
-            exit($e->getMessage());
-            abort(403, 'Unauthorized action.2');
+            abort(403, 'Unauthorized action.2 - ' . $e->getMessage());
         } catch (InvalidToken $e) {
-            // return 'The token is invalid: '.$e->getMessage();
-            abort(403, 'Unauthorized action.3');
+            abort(403, 'Unauthorized action.3 - ' . $e->getMessage());
         }
 
         $uid = $verifiedIdToken->getClaim('sub');
+        $user_fb = $auth->getUser($uid);
         if(!$uid) { abort(403, 'Error al obtener el uid del usuario'); };
-        $user = User::updateOrCreate(['keyfirestore'=>$uid]);
+        $user = User::updateOrCreate(['uid_fb'=>$uid]);
         $user->remember_token = $token;
+        $user->email = $user_fb->email;
+        $user->name = $user_fb->displayName;
+        $user->phone = $user_fb->phoneNumber;
+        $user->admin = $user_fb->customClaims['admin'];
         $user->save();
         Auth::loginUsingId($user->id);
 

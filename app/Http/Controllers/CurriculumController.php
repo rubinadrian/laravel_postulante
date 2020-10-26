@@ -11,10 +11,7 @@ class CurriculumController extends Controller
 {
 
     public function getFile(Request $request){
-        $p = Postulante::where('keyfirestore', $request->uid)->first();
-        if($p) {
-            return Storage::download($p->curriculum_file);
-        }
+        return Storage::download($request->curriculum_file);
     }
 
 
@@ -25,10 +22,10 @@ class CurriculumController extends Controller
 
         if(array_search($extension, ['pdf','doc','docx']) !== false) {
 
-            $p = Postulante::where('keyfirestore', $request->uid)->first();
+            $p = Postulante::where('uid_fb', $request->uid)->first();
             if(!$p) {
                 $p = new Postulante();
-                $p->keyfirestore = $request->uid;
+                $p->uid_fb = $request->uid;
             } else if(Storage::exists($p->curriculum_file)) {
                 Storage::delete($p->curriculum_file);
             }

@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AlertaNuevoPostulante;
 use App\Postulante;
 use App\Localidad;
 use App\Familiar;
@@ -52,7 +53,15 @@ class PostulanteController extends Controller
 		 if($request->area_laboral)
 		 $query = $query->whereHas('experiencias', function($q) use ($request) {
 		 	$q->whereIn('area_laboral_id', $request->area_laboral);
-		 });
+         });
+
+         if($request->fecha_desde)
+		    $query = $query->whereDate('created_at', '>=', Carbon::parse($request->fecha_desde));
+
+         if($request->fecha_hasta)
+		    $query = $query->whereDate('created_at', '<=', Carbon::parse($request->fecha_hasta));
+
+
 
 		if($request->areas_coopunion)
 		 $query = $query->whereHas('preferencias', function($q) use ($request) {
@@ -68,7 +77,7 @@ class PostulanteController extends Controller
     public function show($uid_firebase)
     {
         $postulante = Postulante::with(['familiares','estudios','experiencias','referencias','preferencias'])
-        	->where('keyfirestore', $uid_firebase)->first();
+        	->where('uid_fb', $uid_firebase)->first();
 
         if(!$postulante) return;
 
@@ -97,19 +106,19 @@ class PostulanteController extends Controller
 
     public function update(Request $request) {
 
-    	$is_admin = User::where('keyfirestore', $request->uid)->where('admin', 1)->first();
+    	$is_admin = User::where('uid_fb', $request->uid)->where('admin', 1)->first();
 
     	if($request->id) {
     		$p = Postulante::find($request->id);
     	} else {
     		if(!$is_admin && $request->uid) {
-    			$p = Postulante::where('keyfirestore', $request->uid)->first();
+    			$p = Postulante::where('uid_fb', $request->uid)->first();
     		}
     	}
 
     	if(!$p) {
     		$p = new Postulante();
-    		$p->keyfirestore = $request->uid;
+    		$p->uid_fb = $request->uid;
     	}
 
     	// Datos Personales
@@ -164,6 +173,11 @@ class PostulanteController extends Controller
 		//Preferencias
 		$p->preferencias()->detach();
 		$p->preferencias()->attach($request->preferencias);
+
+
+        Mail::to('lalmada@coopunion.com.ar')
+            ->cc('srivero@coopunion.com.ar')
+            ->send(new AlertaNuevoPostulante($p));
 
     	return ['msg' => 'successful'];
 
@@ -229,6 +243,11 @@ class PostulanteController extends Controller
 		$referencia->save();
     }
 
+    public function pruebaMail() {
+        $p = Postulante::find(2017);
+        return new AlertaNuevoPostulante($p);
+        //Mail::to('arubin@coopunion.com.ar')->send(new AlertaNuevoPostulante());
+    }
 
 }
 

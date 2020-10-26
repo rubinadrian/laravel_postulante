@@ -15,7 +15,7 @@ class CreatePostulantesTable extends Migration
     {
         Schema::create('postulantes', function (Blueprint $table) {
             $table->id();
-            $table->string('keyfirestore')->nullable();
+            $table->string('uid_fb')->nullable();
             $table->string('nombre')->nullable();
             $table->string('apellido')->nullable();
             $table->string('domicilio')->nullable();
